@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 1. properties 파일 wiring -->
+	<properties resource="config/jdbc.properties"></properties>
+
+	<settings>
+		<setting name='mapUnderscoreToCamelCase' value="true"></setting>  <!-- 컬럼명과 필드명이 다를경우 _ 를 카멜케이스로 -->
+	</settings>
+	
+
+	<!-- 2. vo 클래스 wiring -->
+	<typeAliases>
+		<typeAlias type="com.encore.spring.domain.MyProduct" alias="myProduct"/>
+	</typeAliases>
+	
+	
+	<!-- 3. DB 서버 정보를 wiring -->
+	<environments default="aa">
+		<environment id="aa">
+			<transactionManager type="JDBC"/>
+			<dataSource type="UNPOOLED">   					 <!-- 단위테스트 때문에 unpooled -->
+				<property name="driver" value="${jdbc.mysql.driver}"/> <!-- setDriver("com.mysql.cj.jdbc.Driver") -->
+				<property name="url" value="${jdbc.mysql.url}"/>
+				<property name="username" value="${jdbc.mysql.username}"/>
+				<property name="password" value="${jdbc.mysql.password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	<!-- 4. mapper를 wiring -->
+	<mappers>
+	<mapper resource="sql/mybatis-product-mapping.xml"/>	
+	</mappers>
+
+</configuration>

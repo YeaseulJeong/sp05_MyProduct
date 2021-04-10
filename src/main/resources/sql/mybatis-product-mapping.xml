@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+id
+1. addProduct
+2. findProductByName     Like + %   _특정한 단어가 들어오면 돌아가도록
+3. findAllProduct
+ -->
+
+<!-- SQL definition -->
+<mapper namespace="ProductMapper">
+
+	<sql id ="select-myproduct">    <!-- select 할 때만 반복되는 부분 위로 뺄 수 있다 -->
+		SELECT 
+		id, name, maker, price
+		FROM myproduct
+	</sql>
+	
+	<!-- DB에서 자동증가 하는 값이 vo의 pk에 해당하는 컬럼일 때 INSERT 쿼리문 작성시 반드시 이렇게  -->
+	<insert id="addProduct" parameterType="myProduct" useGeneratedKeys="true" keyProperty="id">   
+	<!-- id 는 auto_increments 이기 때문에 컬럼에 넣을 수 없다  (name, maker, price)이렇게 명시 안해주면 에러난다 -->
+	<!-- 자동 증가되는 auto increment 값이 PK 일 때는 다시 이 클래스로 주입을 해주어야 한다 안그러면 백날 0 으로만 출력된다
+		DB에서 증가하는 값이 PK 일 때 그걸 insert 할 때  new MyProduct("디오스 세탁기", "엘지", 12000000); 만 하면 이것에 대한 id는 DB에 자동으로 1이 증가 되어 있지만 VO 에서는 빠져있게 됨 -->
+		INSERT
+		INTO myproduct (name, maker, price) VALUES (#{name}, #{maker}, #{price})
+	</insert>
+	
+	<select id="findProductByName" parameterType="string" resultType="myProduct">
+		<include refid="select-myproduct"></include>
+		WHERE name LIKE '%' #{VALUE} '%'
+	</select>
+	
+	<select id="findAllProduct" resultType="myProduct">
+		<include refid="select-myproduct"></include>
+	</select>
+	
+</mapper>
